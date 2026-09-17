@@ -7,208 +7,150 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* ============================================================
-     EDIT THESE VALUES to personalize the page. Everything else
-     you can leave as is.
-     ============================================================ */
   :root {
-    /* twilight (top of page, behind the envelope) */
-    --ink-950: #14112a;
-    --ink-700: #322c56;
-    --ink-text: #ece8f7;
-    --ink-text-dim: #b3aad6;
-
-    /* parchment (letter) */
+    --gate-bg-1: #221d33;
+    --gate-bg-2: #07060d;
     --paper-100: #efe3c8;
     --paper-50: #f7f0dd;
     --paper-ink: #3b2a20;
     --paper-ink-dim: #6e5847;
-
-    /* dawn / birthday */
     --gold-500: #d4a24c;
-    --gold-bg: #2a2114;
-    --gold-bg-2: #4a3620;
-
-    --rose: #c98b7c;
-
+    --gold-bg: #221a12;
+    --gold-bg-2: #3d2c18;
     --serif: 'Fraunces', Georgia, serif;
     --sans: 'Space Grotesk', -apple-system, sans-serif;
   }
 
   * { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
+  html, body { margin: 0; overscroll-behavior: none; }
   body {
-    margin: 0;
     font-family: var(--sans);
-    color: var(--ink-text);
     background: var(--paper-100);
-    overflow-x: hidden;
+    color: var(--paper-ink);
   }
-
-  section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5rem 1.5rem;
-    position: relative;
-  }
-
-  h2 {
-    font-family: var(--serif);
-    font-weight: 500;
-    line-height: 1.15;
-    margin: 0;
-  }
-
-  p { line-height: 1.6; }
-
-  /* focus visibility */
-  button:focus-visible, .envelope:focus-visible {
-    outline: 2px solid var(--gold-500);
-    outline-offset: 4px;
-  }
+  body.locked { overflow: hidden; height: 100vh; }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
 
-  /* ---------------- LETTER ---------------- */
-  .letter-section {
-    min-height: 100vh;
-    justify-content: center;
-    background: linear-gradient(180deg, var(--ink-950) 0%, var(--ink-700) 22%, var(--paper-100) 55%);
-    padding-top: 4rem;
-  }
-
-  .envelope-wrap { text-align: center; }
-
-  .envelope {
-    width: min(320px, 80vw);
-    aspect-ratio: 3 / 2;
-    margin: 0 auto 1.5rem;
-    position: relative;
-    cursor: pointer;
-    background-color: var(--paper-50);
-    background-image: var(--paper-grain, none);
-    background-size: cover;
-    border-radius: 4px;
-    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5), inset 0 -14px 20px -14px rgba(0,0,0,0.18);
-    border: none;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .envelope::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 46%;
-    background-color: var(--paper-100);
-    background-image: var(--paper-grain, none);
-    background-size: cover;
-    clip-path: polygon(0 0, 50% 100%, 100% 0);
-    transform-origin: top;
-    transition: transform 0.6s cubic-bezier(.6,0,.4,1);
-    box-shadow: inset 0 -8px 14px -10px rgba(0,0,0,0.25);
-  }
-
-  .envelope.open::before { transform: rotateX(150deg); }
-
-  .seal {
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #d99f92, var(--rose) 60%, #a9635a 100%);
+  /* ================= GATE (envelope, locked screen) ================= */
+  #gate {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: var(--serif);
-    font-style: italic;
-    color: var(--paper-50);
-    font-size: 1.1rem;
-    z-index: 2;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.35);
-    transition: opacity 0.3s ease;
+    background: radial-gradient(ellipse at 50% 38%, var(--gate-bg-1) 0%, var(--gate-bg-2) 78%);
+    transition: opacity 0.9s ease;
   }
+  #gate.opened { opacity: 0; pointer-events: none; }
 
-  .envelope.open .seal { opacity: 0; }
-
-  .envelope-hint {
-    font-size: 0.9rem;
-    color: var(--ink-text-dim);
-  }
-
-  .letter-reveal {
-    max-width: 620px;
-    width: 100%;
-    margin: 2.5rem auto 0;
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: opacity 0.7s ease, max-height 1.2s ease;
-  }
-
-  .letter-reveal.visible {
-    opacity: 1;
-    max-height: 20000px;
-  }
-
-  /* toggle control */
-  .letter-toggle {
-    display: inline-flex;
-    background: rgba(59, 42, 32, 0.1);
-    border-radius: 999px;
-    padding: 4px;
-    margin: 0 auto 1.8rem;
-  }
-
-  .letter-toggle button {
-    font-family: var(--sans);
-    font-size: 0.88rem;
-    padding: 0.5rem 1.3rem;
-    border-radius: 999px;
-    border: none;
-    background: transparent;
-    color: var(--paper-ink-dim);
-    cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-
-  .letter-toggle button.active {
-    background: var(--paper-ink);
-    color: var(--paper-50);
-  }
-
-  .letter-panel { display: none; }
-  .letter-panel.active { display: block; }
-
-  /* ---- Yutaka mode: pre-composited page images (background + lines +
-     handwriting already merged in an image editor, e.g. ibis Paint) ---- */
-  .paper-sheet {
+  .stage {
     position: relative;
+    width: min(360px, 78vw);
+  }
+
+  .envelope-btn {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.7s cubic-bezier(.4,0,.2,1), opacity 0.6s ease;
+  }
+  .stage.open .envelope-btn { transform: translateY(35%) scale(0.92); opacity: 0; }
+
+  .envelope-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 3px;
+    filter: drop-shadow(0 30px 40px rgba(0,0,0,0.65));
+  }
+
+  .paper-peek-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 3px;
+    z-index: 1;
+  }
+  .paper-peek {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 82%;
+    transform: translate(-50%, 105%);
+    border-radius: 2px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: transform 0.8s cubic-bezier(.3,1.1,.4,1) 0.12s;
+  }
+  .stage.open .paper-peek { transform: translate(-50%, -58%); }
+
+  .photo-missing {
+    width: min(360px, 78vw);
+    aspect-ratio: 3 / 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem;
+    border: 1.5px dashed rgba(255,255,255,0.35);
+    border-radius: 4px;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    font-family: var(--sans);
+  }
+  .photo-missing strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 0.4rem;
+  }
+  .photo-missing code {
+    background: rgba(255,255,255,0.12);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+  }
+
+  /* ================= LETTER ================= */
+  .letter-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4.5rem 1.5rem 6rem;
+    background: linear-gradient(180deg, var(--gate-bg-2) 0%, var(--gate-bg-1) 14%, var(--paper-100) 42%);
+  }
+
+  .pages {
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .paper-sheet {
     border-radius: 2px;
     box-shadow: 0 30px 60px -30px rgba(0,0,0,0.35);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.6rem;
     overflow: hidden;
   }
-
   .paper-sheet:last-child { margin-bottom: 0; }
 
   .ink-overlay {
     display: block;
     width: 100%;
     height: auto;
+    cursor: zoom-in;
   }
 
   .page-missing {
-    min-height: 360px;
+    min-height: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -218,59 +160,26 @@
     border: 1.5px dashed rgba(59,42,32,0.35);
     border-radius: 2px;
     padding: 2rem;
+    background: var(--paper-50);
   }
-
   .page-missing strong {
     display: block;
     font-family: var(--serif);
     font-size: 1.05rem;
-    font-weight: 500;
     color: var(--paper-ink);
     margin-bottom: 0.4rem;
   }
-
   .page-missing code {
     background: rgba(59,42,32,0.08);
     padding: 0.1rem 0.4rem;
     border-radius: 3px;
   }
 
-  .handwritten-caption {
-    text-align: center;
-    font-size: 0.82rem;
-    color: var(--paper-ink-dim);
-    margin-top: 0.5rem;
-  }
-
-  /* ---- Formal mode: clean typed paper ---- */
-  .letter-paper {
-    background-color: var(--paper-50);
-    background-image: var(--paper-grain, none);
-    background-size: cover;
-    border-radius: 2px;
-    padding: 3rem 2.5rem;
-    color: var(--paper-ink);
-    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.35);
-  }
-
-  .letter-paper p {
-    font-family: var(--serif);
-    font-size: 1.15rem;
-    margin: 0 0 1.3rem;
-  }
-
-  .letter-signoff {
-    margin-top: 2rem;
-    font-family: var(--serif);
-    font-style: italic;
-  }
-
-  .ink-overlay { cursor: zoom-in; }
-
+  /* ================= LIGHTBOX ================= */
   .lightbox {
     position: fixed;
     inset: 0;
-    background: rgba(20, 17, 42, 0.94);
+    background: rgba(7, 6, 13, 0.94);
     z-index: 50;
     display: none;
     overflow: auto;
@@ -299,258 +208,53 @@
     z-index: 51;
   }
   .lightbox-hint {
-    color: var(--ink-text-dim);
+    color: rgba(255,255,255,0.55);
     font-size: 0.82rem;
     margin-bottom: 1rem;
   }
 
-  /* ---------------- BIRTHDAY ---------------- */
+  /* ================= BIRTHDAY ================= */
   .birthday-section {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    background: radial-gradient(ellipse at 50% 30%, var(--gold-bg-2) 0%, var(--gold-bg) 70%);
+    gap: 2.2rem;
+    padding: 5rem 1.5rem;
+    background: radial-gradient(ellipse at 50% 30%, var(--gold-bg-2) 0%, var(--gold-bg) 75%);
     text-align: center;
   }
 
-  .cake { margin-bottom: 2rem; }
-
-  .candle-flame {
+  .reveal {
     opacity: 0;
-    transform-origin: bottom center;
-    transition: opacity 0.4s ease;
+    transform: translateY(24px);
+    transition: opacity 1s ease, transform 1s ease;
   }
-  .lit .candle-flame {
-    opacity: 1;
-    animation: flicker 1.6s ease-in-out infinite;
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+  .banner {
+    background: var(--paper-50);
+    border-radius: 2px;
+    padding: 1.6rem 2.4rem;
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+    background-image: repeating-linear-gradient(
+      to bottom, transparent 0, transparent 37px,
+      rgba(59,42,32,0.16) 38px, transparent 39px
+    );
   }
-  @keyframes flicker {
-    0%, 100% { transform: scaleY(1) translateX(0); }
-    50% { transform: scaleY(1.08) translateX(0.5px); }
+  .banner h2 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--paper-ink);
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    margin: 0;
   }
 
-  .light-btn {
-    font-family: var(--sans);
-    font-size: 0.95rem;
-    padding: 0.7rem 1.6rem;
-    border-radius: 999px;
-    border: 1px solid var(--gold-500);
-    background: transparent;
-    color: var(--gold-500);
+  .cake-btn {
+    border: none;
+    background: none;
+    padding: 0;
     cursor: pointer;
-    margin-bottom: 2.5rem;
-    transition: background 0.3s ease, color 0.3s ease;
   }
-  .light-btn:hover { background: var(--gold-500); color: var(--gold-bg); }
-  .light-btn.done { opacity: 0.5; pointer-events: none; }
-
-  .birthday-section h2 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: var(--paper-50);
-    max-width: 18ch;
-    margin: 0 auto 1rem;
-  }
-
-  .birthday-section .sub {
-    color: #d9c9a3;
-    max-width: 38ch;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 480px) {
-    .letter-paper { padding: 2.2rem 1.4rem; }
-  }
-</style>
-</head>
-<body>
-
-<!-- LETTER (main content) -->
-<section class="letter-section">
-  <div class="envelope-wrap">
-    <button class="envelope" id="envelope" aria-expanded="false" aria-controls="letter-reveal">
-      <span class="seal">✉</span>
-    </button>
-    <p class="envelope-hint" id="envelope-hint">tap to open</p>
-  </div>
-
-  <div class="letter-reveal" id="letter-reveal">
-    <div class="letter-toggle" role="tablist" aria-label="Letter version">
-      <button type="button" class="active" id="tab-yutaka" role="tab" aria-selected="true">Yutaka</button>
-      <button type="button" id="tab-formal" role="tab" aria-selected="false">Formal</button>
-    </div>
-
-    <!-- ============================================================
-         YUTAKA MODE — your real handwriting, already composited onto
-         stationery paper using a layer app (e.g. ibis Paint).
-
-         HOW TO MAKE EACH PAGE IMAGE:
-         1. Write the letter by hand, as many pages as it takes.
-         2. Scan or photograph each page (flat, good lighting).
-         3. In ibis Paint (or similar): load paper-background.png as
-            the bottom layer, load your handwriting photo as a layer
-            above it, set that layer's blend mode to "Multiply" (this
-            makes the white paper disappear automatically — no need
-            to cut anything out), then nudge/scale it until the
-            handwriting sits nicely against the ruled lines.
-         4. Flatten the layers and export as ONE image per page.
-         5. Save the files in the SAME FOLDER as this html file,
-            named page-1.png, page-2.png, page-3.png, etc.
-         6. Add or remove <div class="paper-sheet">...</div> blocks
-            below to match how many pages you have — one block per
-            page, in reading order. There are 2 example blocks now;
-            duplicate the whole block for more pages, delete for fewer.
-
-         Until an image file is found, a placeholder will show
-         instead of that page — that's normal.
-         ============================================================ -->
-    <div class="letter-panel active" id="panel-yutaka">
-
-      <div class="paper-sheet">
-        <img class="ink-overlay" src="page-1.png" alt="Handwritten letter, page 1"
-             onerror="this.replaceWith(makeMissingPage(1))">
-      </div>
-
-      <div class="paper-sheet">
-        <img class="ink-overlay" src="page-2.png" alt="Handwritten letter, page 2"
-             onerror="this.replaceWith(makeMissingPage(2))">
-      </div>
-
-      <p class="handwritten-caption">written by hand, no corrections</p>
-    </div>
-
-    <!-- ============================================================
-         FORMAL MODE — the same letter, cleaned up and typed.
-         Write the message once by hand (Yutaka mode above), then
-         put a polished, corrected version of that same message
-         here. Keep each paragraph inside its own <p> tag — it can
-         run as long as the real letter does.
-         ============================================================ -->
-    <div class="letter-panel" id="panel-formal">
-      <article class="letter-paper">
-        <p>Dear [Her Name],</p>
-        <p>[Paragraph one.]</p>
-        <p>[Paragraph two.]</p>
-        <p>[Paragraph three — add as many as your letter needs.]</p>
-        <p class="letter-signoff">— [Your Name]</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- LIGHTBOX (tap a handwritten page to view it large / pinch-zoom) -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
-  <p class="lightbox-hint">scroll and pinch to zoom · tap outside the image to close</p>
-  <img id="lightbox-img" src="" alt="Handwritten letter, enlarged">
-</div>
-
-<!-- BIRTHDAY -->
-<section class="birthday-section">
-  <div class="cake" id="cake">
-    <svg width="140" height="120" viewBox="0 0 140 120" id="cake-svg">
-      <ellipse cx="70" cy="108" rx="60" ry="6" fill="#5a4326" opacity="0.4"/>
-      <rect x="20" y="70" width="100" height="35" rx="4" fill="#a97a2e"/>
-      <rect x="20" y="70" width="100" height="8" fill="#d4a24c"/>
-      <rect x="32" y="45" width="76" height="28" rx="4" fill="#c98b7c"/>
-      <rect x="32" y="45" width="76" height="7" fill="#e0a99c"/>
-      <g id="candles">
-        <rect x="55" y="30" width="4" height="16" fill="#f7f0dd"/>
-        <rect x="68" y="26" width="4" height="20" fill="#f7f0dd"/>
-        <rect x="81" y="30" width="4" height="16" fill="#f7f0dd"/>
-        <path class="candle-flame" d="M57,30 q3,-8 0,-12 q-3,4 0,12 Z" fill="#f2b13d"/>
-        <path class="candle-flame" d="M70,26 q3,-8 0,-12 q-3,4 0,12 Z" fill="#f2b13d"/>
-        <path class="candle-flame" d="M83,30 q3,-8 0,-12 q-3,4 0,12 Z" fill="#f2b13d"/>
-      </g>
-    </svg>
-  </div>
-  <button class="light-btn" id="light-btn">light the candles</button>
-  <h2>Happy birthday.</h2>
-  <p class="sub">Whatever the distance is right now, I wanted you to have this anyway.</p>
-</section>
-
-<script>
-  // A subtle, tileable paper-grain texture (no ruled lines) used to give
-  // the envelope and the typed "Formal" paper a slightly tactile,
-  // photographed-paper feel instead of a flat solid color.
-  (function () {
-    const w = 260, h = 260;
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = 'rgba(0,0,0,0)';
-    ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < 3200; i++) {
-      const x = Math.random() * w, y = Math.random() * h;
-      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.5)' : 'rgba(120,100,75,0.5)';
-      ctx.globalAlpha = 0.02 + Math.random() * 0.045;
-      ctx.fillRect(x, y, 1, 1);
-    }
-    ctx.globalAlpha = 1;
-    document.documentElement.style.setProperty('--paper-grain', `url(${canvas.toDataURL()})`);
-  })();
-
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxClose = document.getElementById('lightbox-close');
-
-  document.getElementById('panel-yutaka').addEventListener('click', (e) => {
-    if (e.target.classList.contains('ink-overlay')) {
-      lightboxImg.src = e.target.src;
-      lightbox.classList.add('open');
-    }
-  });
-  function closeLightbox() { lightbox.classList.remove('open'); }
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-
-  function makeMissingPage(n) {
-    const div = document.createElement('div');
-    div.className = 'page-missing';
-    div.innerHTML = '<div><strong>Page ' + n + ' not added yet</strong>' +
-      '<span>Save it as <code>page-' + n + '.png</code> next to this file.</span></div>';
-    return div;
-  }
-
-  const envelope = document.getElementById('envelope');
-  const letterReveal = document.getElementById('letter-reveal');
-  const hint = document.getElementById('envelope-hint');
-  envelope.addEventListener('click', () => {
-    const isOpen = envelope.classList.toggle('open');
-    letterReveal.classList.toggle('visible', isOpen);
-    envelope.setAttribute('aria-expanded', String(isOpen));
-    hint.textContent = isOpen ? 'tap to close' : 'tap to open';
-    if (isOpen) {
-      setTimeout(() => letterReveal.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
-    }
-  });
-
-  const tabYutaka = document.getElementById('tab-yutaka');
-  const tabFormal = document.getElementById('tab-formal');
-  const panelYutaka = document.getElementById('panel-yutaka');
-  const panelFormal = document.getElementById('panel-formal');
-
-  function showTab(mode) {
-    const yutaka = mode === 'yutaka';
-    tabYutaka.classList.toggle('active', yutaka);
-    tabFormal.classList.toggle('active', !yutaka);
-    tabYutaka.setAttribute('aria-selected', String(yutaka));
-    tabFormal.setAttribute('aria-selected', String(!yutaka));
-    panelYutaka.classList.toggle('active', yutaka);
-    panelFormal.classList.toggle('active', !yutaka);
-  }
-
-  tabYutaka.addEventListener('click', () => showTab('yutaka'));
-  tabFormal.addEventListener('click', () => showTab('formal'));
-
-  const lightBtn = document.getElementById('light-btn');
-  const cakeSvg = document.getElementById('cake-svg');
-  lightBtn.addEventListener('click', () => {
-    cakeSvg.classList.add('lit');
-    lightBtn.classList.add('done');
-    lightBtn.textContent = 'lit 🕯';
-  });
-</script>
-
-</body>
-</html>
