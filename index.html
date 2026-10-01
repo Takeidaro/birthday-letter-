@@ -222,7 +222,7 @@
 <!-- three.js r128, classic scripts (no ES modules) -->
 <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
 <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="settings.js"></script>
+<script>document.write('<script src="settings.js?t=' + Date.now() + '"><\/script>');</script>
 <script>
   /* ============================================================
      SETTINGS — all the numbers you tuned live here.
