@@ -666,7 +666,7 @@
       setTimeout(() => {
         gate.style.visibility = 'hidden';
         running = false;
-        document.getElementById('pages').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo(0, 0);
       }, CONFIG.fadeMs + 50);
     }
 
