@@ -73,7 +73,7 @@
     background: linear-gradient(to bottom, rgba(0,0,0,0.16), transparent);
     z-index: 1;
   }
-  .ink-overlay { display: block; width: 100%; height: auto; cursor: zoom-in; }
+  .ink-overlay { display: block; width: 100%; height: auto; }
   .page-missing, .photo-missing {
     min-height: 340px;
     display: flex; align-items: center; justify-content: center;
@@ -746,9 +746,9 @@ window.scrollTo(0, 0);
      ============================================================ */
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
-  document.getElementById('pages').addEventListener('click', (e) => {
-    if (e.target.classList.contains('ink-overlay')) { lightboxImg.src = e.target.src; lightbox.classList.add('open'); }
-  });
+  // document.getElementById('pages').addEventListener('click', (e) => {
+  //   if (e.target.classList.contains('ink-overlay')) { lightboxImg.src = e.target.src; lightbox.classList.add('open'); }
+  // });
   function closeLightbox() { lightbox.classList.remove('open'); }
   document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
