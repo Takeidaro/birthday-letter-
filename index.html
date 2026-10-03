@@ -224,6 +224,8 @@
 <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>document.write('<script src="settings.js?t=' + Date.now() + '"><\/script>');</script>
 <script>
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
   /* ============================================================
      SETTINGS — all the numbers you tuned live here.
      ============================================================ */
@@ -662,6 +664,7 @@
 
     function goToLetter() {
       gate.classList.add('opened');
+      window.scrollTo(0, 0);
       document.body.classList.remove('locked');
       setTimeout(() => {
         gate.style.visibility = 'hidden';
