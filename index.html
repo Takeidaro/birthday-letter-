@@ -65,6 +65,8 @@
     transition: opacity 0.2s linear;
   }
   .pages { max-width: 640px; width: 100%; }
+  .back-btn { margin: 2.5rem 0 0; padding: 0.6rem 1.4rem; font-family: inherit; font-size: 0.85rem; letter-spacing: 0.04em; color: #d4a24c; background: transparent; border: 1px solid rgba(212,162,76,0.6); border-radius: 999px; cursor: pointer; opacity: 0.8; transition: opacity .2s, background .2s; }
+  .back-btn:hover { opacity: 1; background: rgba(212,162,76,0.08); }
   .paper-sheet { position: relative; line-height: 0; margin-bottom: 20px; }
   .paper-sheet + .paper-sheet::before {
     content: '';
@@ -192,6 +194,7 @@
       <img class="ink-overlay" src="page-3.png" alt="Letter page 3" onerror="this.replaceWith(makeMissingPage(3))">
     </div>
   </div>
+  <button class="back-btn" onclick="returnToEnvelope()">↺ Back to the envelope</button>
 </section>
 
 <div class="lightbox" id="lightbox">
@@ -672,6 +675,17 @@ window.scrollTo(0, 0);
       }, CONFIG.fadeMs + 50);
     }
 
+    function returnToEnvelope() {
+  resetOpen();
+  gate.style.visibility = 'visible';
+  gate.classList.remove('opened');
+  if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); }
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    document.body.classList.add('locked');
+  }, CONFIG.fadeMs + 50);
+}
+window.returnToEnvelope = returnToEnvelope;
     /* ---- optional light effect when the flap finishes ---- */
     let glowObj = null;
     function clearGlow() { if (glowObj) { scene.remove(glowObj.group); glowObj = null; } }
