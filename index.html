@@ -113,7 +113,7 @@
   .lightbox-hint { color: rgba(255,255,255,0.5); font-size: 0.82rem; margin-bottom: 1rem; }
 
   /* ================= SCENE 3 — BIRTHDAY ================= */
-  .birthday-section { height: 200vh; position: relative; background: var(--black); }
+  .birthday-section { display: none; }
   .birthday-sticky {
     position: sticky; top: 0; height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -775,7 +775,7 @@ window.scrollTo(0, 0);
 
     const fadeStart = letterBottom - vh * 0.9;
     const fadeEnd = letterBottom + vh * 0.15;
-    let lp = Math.max(0, Math.min(1, (y - fadeStart) / (fadeEnd - fadeStart)));
+    let lp = 0;
     letterSection.style.opacity = String(1 - lp);
     letterSection.style.pointerEvents = lp > 0.6 ? 'none' : 'auto';
 
